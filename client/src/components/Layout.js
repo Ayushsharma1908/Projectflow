@@ -1,18 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, FolderKanban, CheckSquare, LogOut, Menu, X, Zap } from 'lucide-react';
+import { LayoutDashboard, FolderKanban, CheckSquare, LogOut, Menu, X, Workflow, ChevronLeft } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+
+const useWindowWidth = () => {
+  const [width, setWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    const handler = () => setWidth(window.innerWidth);
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, []);
+  return width;
+};
 
 const Layout = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const width = useWindowWidth();
+  const isMobile = width < 768;
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
+  // On desktop: sidebar open by default. On mobile: closed by default.
+  const [sidebarOpen, setSidebarOpen] = useState(!isMobile);
 
+  // Sync when screen size crosses breakpoint
+  useEffect(() => {
+    setSidebarOpen(!isMobile);
+  }, [isMobile]);
+
+  const handleLogout = () => { logout(); navigate('/login'); };
   const initials = user?.name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'U';
 
   const navItems = [
@@ -21,67 +36,101 @@ const Layout = () => {
     { to: '/my-tasks', icon: CheckSquare, label: 'My Tasks' },
   ];
 
+  const closeSidebar = () => setSidebarOpen(false);
+  const toggleSidebar = () => setSidebarOpen(v => !v);
+
   return (
-    <div style={styles.wrapper}>
-      {/* Mobile overlay */}
-      {sidebarOpen && (
-        <div style={styles.overlay} onClick={() => setSidebarOpen(false)} />
+    <div style={s.wrapper}>
+      {/* Mobile overlay — only when sidebar is open on mobile */}
+      {isMobile && sidebarOpen && (
+        <div style={s.overlay} onClick={closeSidebar} />
       )}
 
-      {/* Sidebar */}
-      <aside style={{ ...styles.sidebar, ...(sidebarOpen ? styles.sidebarOpen : {}) }}>
-        <div style={styles.logo}>
-          <div style={styles.logoIcon}><Zap size={16} strokeWidth={2.5} /></div>
-          <span style={styles.logoText}>ProjectFlow</span>
+      {/* ── SIDEBAR ── */}
+      <aside style={{
+        ...s.sidebar,
+        ...(isMobile ? s.sidebarMobile : {}),
+        transform: sidebarOpen ? 'translateX(0)' : 'translateX(-100%)',
+      }}>
+        {/* Logo + close button */}
+        <div style={s.logoWrap}>
+          <div style={s.logoIcon}>
+            <Workflow size={17} strokeWidth={2.2} color="#0D1F16" />
+          </div>
+          <span style={s.logoText}>ProjectFlow</span>
+          {/* Close button inside sidebar */}
+          <button
+            onClick={closeSidebar}
+            className="btn btn-icon"
+            style={{ marginLeft: 'auto', flexShrink: 0 }}
+            title="Close sidebar"
+          >
+            {isMobile ? <X size={18} /> : <ChevronLeft size={18} />}
+          </button>
         </div>
 
-        <nav style={styles.nav}>
-          <p style={styles.navSection}>Navigation</p>
+        {/* Nav links */}
+        <nav style={s.nav}>
+          <p style={s.navSection}>Navigation</p>
           {navItems.map(({ to, icon: Icon, label }) => (
             <NavLink
               key={to} to={to}
-              onClick={() => setSidebarOpen(false)}
-              style={({ isActive }) => ({ ...styles.navLink, ...(isActive ? styles.navLinkActive : {}) })}
+              onClick={() => isMobile && closeSidebar()}
+              style={({ isActive }) => ({ ...s.navLink, ...(isActive ? s.navLinkActive : {}) })}
             >
               {({ isActive }) => (
                 <>
                   <Icon size={16} strokeWidth={isActive ? 2.5 : 1.8} />
                   <span>{label}</span>
-                  {isActive && <div style={styles.navIndicator} />}
+                  {isActive && <div style={s.navIndicator} />}
                 </>
               )}
             </NavLink>
           ))}
         </nav>
 
-        <div style={styles.sidebarBottom}>
-          <div style={styles.userCard}>
-            <div style={{ ...styles.avatar, width: 34, height: 34, fontSize: 13 }}>{initials}</div>
+        {/* User card */}
+        <div style={s.sidebarBottom}>
+          <div style={s.userCard}>
+            <div className="avatar" style={{ width: 34, height: 34, fontSize: 12, flexShrink: 0 }}>{initials}</div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <p style={styles.userName}>{user?.name}</p>
-              <p style={styles.userEmail}>{user?.email}</p>
+              <p style={s.userName}>{user?.name}</p>
+              <p style={s.userEmail}>{user?.email}</p>
             </div>
-            <button onClick={handleLogout} className="btn-icon btn" title="Logout">
+            <button onClick={handleLogout} className="btn btn-icon" title="Logout" style={{ flexShrink: 0 }}>
               <LogOut size={15} />
             </button>
           </div>
         </div>
       </aside>
 
-      {/* Main */}
-      <main style={styles.main}>
-        {/* Topbar (mobile) */}
-        <div style={styles.topbar}>
-          <button className="btn btn-icon" onClick={() => setSidebarOpen(true)}>
+      {/* ── MAIN ── */}
+      <main style={{
+        ...s.main,
+        marginLeft: (!isMobile && sidebarOpen) ? 224 : 0,
+      }}>
+        {/* Top bar — always visible, has hamburger */}
+        <div style={s.topbar}>
+          <button className="btn btn-icon" onClick={toggleSidebar} title="Toggle sidebar" style={{ flexShrink: 0 }}>
             <Menu size={20} />
           </button>
-          <div style={{ ...styles.logo, paddingLeft: 0 }}>
-            <div style={styles.logoIcon}><Zap size={14} strokeWidth={2.5} /></div>
-            <span style={styles.logoText}>ProjectFlow</span>
+          <div style={s.topbarLogo}>
+            <div style={{ ...s.logoIcon, width: 26, height: 26 }}>
+              <Workflow size={13} strokeWidth={2.2} color="#0D1F16" />
+            </div>
+            <span style={{ ...s.logoText, fontSize: 15 }}>ProjectFlow</span>
           </div>
+          {/* Right side user avatar on mobile */}
+          {isMobile && (
+            <div className="avatar" style={{ width: 32, height: 32, fontSize: 11, marginLeft: 'auto', cursor: 'pointer' }}
+              onClick={handleLogout} title="Logout">
+              {initials}
+            </div>
+          )}
         </div>
 
-        <div style={styles.content}>
+        {/* Page content */}
+        <div style={s.content}>
           <Outlet />
         </div>
       </main>
@@ -89,86 +138,124 @@ const Layout = () => {
   );
 };
 
-const styles = {
+const s = {
   wrapper: {
-    display: 'flex', height: '100vh',
-    background: 'var(--bg-base)', overflow: 'hidden'
+    display: 'flex',
+    height: '100vh',
+    background: 'var(--bg-base)',
+    overflow: 'hidden',
+    position: 'relative',
   },
   overlay: {
-    position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)',
-    zIndex: 99, display: 'none',
-    '@media (max-width: 768px)': { display: 'block' }
+    position: 'fixed', inset: 0,
+    background: 'rgba(0,0,0,0.65)',
+    zIndex: 98,
   },
   sidebar: {
-    width: 220, flexShrink: 0,
+    position: 'fixed',
+    top: 0, left: 0, bottom: 0,
+    width: 224,
     background: 'var(--bg-surface)',
-    borderRight: '1px solid rgba(255,255,255,0.04)',
+    borderRight: '1px solid rgba(255,255,255,0.06)',
     display: 'flex', flexDirection: 'column',
-    boxShadow: '4px 0 24px rgba(0,0,0,0.3)',
-    transition: 'transform 0.3s cubic-bezier(0.4,0,0.2,1)',
-    zIndex: 100,
+    boxShadow: '4px 0 30px rgba(0,0,0,0.5)',
+    zIndex: 99,
+    transition: 'transform 0.28s cubic-bezier(0.4,0,0.2,1)',
+    willChange: 'transform',
   },
-  sidebarOpen: { transform: 'translateX(0)' },
-  logo: {
+  sidebarMobile: {
+    zIndex: 99,
+  },
+  logoWrap: {
     display: 'flex', alignItems: 'center', gap: 10,
-    padding: '24px 20px', borderBottom: '1px solid rgba(255,255,255,0.04)'
+    padding: '16px 14px',
+    borderBottom: '1px solid rgba(255,255,255,0.05)',
+    minHeight: 58,
   },
   logoIcon: {
-    width: 30, height: 30,
-    background: 'linear-gradient(135deg, var(--gold), #B08040)',
-    borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center',
-    color: '#0F0E0C', boxShadow: '0 2px 12px rgba(200,169,126,0.3)'
+    width: 32, height: 32,
+    background: 'linear-gradient(135deg, #25D366, #128C7E)',
+    borderRadius: 9,
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    boxShadow: '0 2px 14px rgba(37,211,102,0.35)',
+    flexShrink: 0,
   },
   logoText: {
-    fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 600,
-    color: 'var(--text-primary)', letterSpacing: '-0.01em'
+    fontSize: 16, fontWeight: 700,
+    color: 'var(--text-primary)',
+    letterSpacing: '-0.03em',
+    fontFamily: 'var(--font-body)',
+    whiteSpace: 'nowrap',
   },
-  nav: { flex: 1, padding: '16px 12px', display: 'flex', flexDirection: 'column', gap: 2 },
+  nav: {
+    flex: 1, padding: '14px 10px',
+    display: 'flex', flexDirection: 'column', gap: 2,
+    overflowY: 'auto',
+  },
   navSection: {
-    fontSize: 10, fontWeight: 600, color: 'var(--text-muted)',
-    textTransform: 'uppercase', letterSpacing: '0.1em',
-    padding: '0 8px', marginBottom: 8
+    fontSize: 10, fontWeight: 700, color: 'var(--text-muted)',
+    textTransform: 'uppercase', letterSpacing: '0.12em',
+    padding: '0 8px', marginBottom: 8,
   },
   navLink: {
     display: 'flex', alignItems: 'center', gap: 10,
-    padding: '9px 12px', borderRadius: 'var(--radius-sm)',
+    padding: '10px 12px', borderRadius: 'var(--radius-sm)',
     color: 'var(--text-muted)', textDecoration: 'none',
     fontSize: 14, fontWeight: 400, position: 'relative',
-    transition: 'var(--transition)'
+    transition: 'var(--transition)',
   },
   navLinkActive: {
-    color: 'var(--gold)',
-    background: 'var(--gold-dim)',
+    color: 'var(--green)',
+    background: 'var(--green-dim)',
+    fontWeight: 500,
   },
   navIndicator: {
     position: 'absolute', right: 0, top: '50%', transform: 'translateY(-50%)',
-    width: 3, height: 18, background: 'var(--gold)',
-    borderRadius: '2px 0 0 2px'
+    width: 3, height: 18, background: 'var(--green)',
+    borderRadius: '2px 0 0 2px',
+    boxShadow: '0 0 8px rgba(37,211,102,0.6)',
   },
-  sidebarBottom: { padding: '12px', borderTop: '1px solid rgba(255,255,255,0.04)' },
+  sidebarBottom: {
+    padding: '10px',
+    borderTop: '1px solid rgba(255,255,255,0.05)',
+  },
   userCard: {
     display: 'flex', alignItems: 'center', gap: 10,
-    padding: '10px 10px',
+    padding: '10px',
     borderRadius: 'var(--radius-sm)',
-    background: 'var(--bg-elevated)'
+    background: 'var(--bg-elevated)',
   },
-  avatar: {
-    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-    borderRadius: '50%', background: 'var(--gold-dim)', color: 'var(--gold)',
-    border: '1px solid var(--gold-border)', fontWeight: 600, flexShrink: 0
+  userName: {
+    fontSize: 13, fontWeight: 600, color: 'var(--text-primary)',
+    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
   },
-  userName: { fontSize: 13, fontWeight: 500, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
-  userEmail: { fontSize: 11, color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
+  userEmail: {
+    fontSize: 11, color: 'var(--text-muted)',
+    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+  },
   main: {
-    flex: 1, display: 'flex', flexDirection: 'column',
-    overflow: 'hidden', minWidth: 0
+    flex: 1,
+    display: 'flex', flexDirection: 'column',
+    overflow: 'hidden',
+    width: '100%',
+    transition: 'margin-left 0.28s cubic-bezier(0.4,0,0.2,1)',
   },
   topbar: {
-    display: 'none', alignItems: 'center', gap: 12,
-    padding: '12px 20px', borderBottom: '1px solid rgba(255,255,255,0.04)',
-    background: 'var(--bg-surface)'
+    display: 'flex', alignItems: 'center', gap: 12,
+    padding: '0 16px',
+    height: 58, minHeight: 58,
+    borderBottom: '1px solid rgba(255,255,255,0.05)',
+    background: 'var(--bg-surface)',
+    flexShrink: 0,
   },
-  content: { flex: 1, overflow: 'auto', padding: '32px' }
+  topbarLogo: {
+    display: 'flex', alignItems: 'center', gap: 9,
+  },
+  content: {
+    flex: 1,
+    overflow: 'auto',
+    padding: '24px 20px',
+  },
 };
 
 export default Layout;

@@ -1,26 +1,26 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../utils/api';
-import { Plus, ArrowLeft, Calendar, Users, Trash2, Edit2, MoreHorizontal, User, Flag, Tag } from 'lucide-react';
+import { Plus, ArrowLeft, Calendar, Users, Trash2, Edit2, MoreHorizontal, User } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { format, isAfter } from 'date-fns';
 import { useAuth } from '../context/AuthContext';
 
 const COLUMNS = [
-  { id: 'todo', label: 'To Do', color: '#6B7A99' },
-  { id: 'in-progress', label: 'In Progress', color: '#C8A97E' },
-  { id: 'review', label: 'Review', color: '#9B8FD4' },
-  { id: 'done', label: 'Done', color: '#7AAD8C' },
+  { id: 'todo',        label: 'To Do',       color: '#636366' },
+  { id: 'in-progress', label: 'In Progress',  color: '#25D366' },
+  { id: 'review',      label: 'Review',       color: '#BF5AF2' },
+  { id: 'done',        label: 'Done',         color: '#128C7E' },
 ];
-const priorityColors = { low: '#7AAD8C', medium: '#C8A97E', high: '#D4936B', critical: '#E07B6A' };
+const priorityColors = { low: '#30D158', medium: '#FFD60A', high: '#FF9F0A', critical: '#FF453A' };
 
+/* ── Task Modal ── */
 const TaskModal = ({ task, projectId, members, onClose, onSave }) => {
-  const { user } = useAuth();
   const [form, setForm] = useState(task ? {
     title: task.title, description: task.description || '',
     assignee: task.assignee?._id || '', status: task.status,
     priority: task.priority, deadline: task.deadline ? task.deadline.split('T')[0] : '',
-    tags: task.tags?.join(', ') || ''
+    tags: task.tags?.join(', ') || '',
   } : { title: '', description: '', assignee: '', status: 'todo', priority: 'medium', deadline: '', tags: '' });
   const [loading, setLoading] = useState(false);
 
@@ -28,27 +28,15 @@ const TaskModal = ({ task, projectId, members, onClose, onSave }) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const payload = {
-        ...form,
-        project: projectId,
+      const payload = { ...form, project: projectId,
         tags: form.tags ? form.tags.split(',').map(t => t.trim()).filter(Boolean) : [],
-        assignee: form.assignee || null
-      };
-      let res;
-      if (task) {
-        res = await api.put(`/tasks/${task._id}`, payload);
-        toast.success('Task updated!');
-      } else {
-        res = await api.post('/tasks', payload);
-        toast.success('Task created!');
-      }
+        assignee: form.assignee || null };
+      const res = task ? await api.put(`/tasks/${task._id}`, payload) : await api.post('/tasks', payload);
+      toast.success(task ? 'Task updated!' : 'Task created!');
       onSave(res.data, !!task);
       onClose();
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to save task');
-    } finally {
-      setLoading(false);
-    }
+    } catch (err) { toast.error(err.response?.data?.message || 'Failed to save task'); }
+    finally { setLoading(false); }
   };
 
   return (
@@ -99,9 +87,9 @@ const TaskModal = ({ task, projectId, members, onClose, onSave }) => {
             <label className="form-label">Tags</label>
             <input value={form.tags} onChange={e => setForm({...form, tags: e.target.value})} placeholder="bug, feature, urgent" />
           </div>
-          <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end', marginTop: 24 }}>
+          <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 22, flexWrap: 'wrap' }}>
             <button type="button" className="btn btn-ghost" onClick={onClose}>Cancel</button>
-            <button type="submit" className="btn btn-primary" disabled={loading}>{loading ? 'Saving...' : task ? 'Update Task' : 'Create Task'}</button>
+            <button type="submit" className="btn btn-primary" disabled={loading}>{loading ? 'Saving...' : task ? 'Update' : 'Create Task'}</button>
           </div>
         </form>
       </div>
@@ -109,38 +97,39 @@ const TaskModal = ({ task, projectId, members, onClose, onSave }) => {
   );
 };
 
+/* ── Task Card ── */
 const TaskCard = ({ task, onEdit, onDelete, onStatusChange }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const isOverdue = task.deadline && isAfter(new Date(), new Date(task.deadline)) && task.status !== 'done';
 
   return (
-    <div style={styles.taskCard}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
+    <div style={cardS.wrap}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 9 }}>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 4 }}>
             <div style={{ width: 6, height: 6, borderRadius: '50%', background: priorityColors[task.priority], flexShrink: 0 }} />
-            <span style={{ fontSize: 11, color: priorityColors[task.priority], textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>
+            <span style={{ fontSize: 10, color: priorityColors[task.priority], textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 700 }}>
               {task.priority}
             </span>
           </div>
           <p style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-primary)', lineHeight: 1.4 }}>{task.title}</p>
         </div>
-        <div style={{ position: 'relative', flexShrink: 0 }}>
+        <div style={{ position: 'relative', flexShrink: 0, marginLeft: 4 }}>
           <button className="btn btn-icon" onClick={() => setMenuOpen(!menuOpen)} style={{ padding: 4 }}>
             <MoreHorizontal size={14} />
           </button>
           {menuOpen && (
-            <div style={styles.menu} onMouseLeave={() => setMenuOpen(false)}>
-              <button style={styles.menuItem} onClick={() => { onEdit(task); setMenuOpen(false); }}>
-                <Edit2 size={12} /> Edit
+            <div style={cardS.menu} onMouseLeave={() => setMenuOpen(false)}>
+              <button style={cardS.menuItem} onClick={() => { onEdit(task); setMenuOpen(false); }}>
+                <Edit2 size={11} /> Edit
               </button>
               {COLUMNS.filter(c => c.id !== task.status).map(c => (
-                <button key={c.id} style={styles.menuItem} onClick={() => { onStatusChange(task._id, c.id); setMenuOpen(false); }}>
-                  Move to {c.label}
+                <button key={c.id} style={cardS.menuItem} onClick={() => { onStatusChange(task._id, c.id); setMenuOpen(false); }}>
+                  → {c.label}
                 </button>
               ))}
-              <button style={{ ...styles.menuItem, color: '#E07B6A' }} onClick={() => { onDelete(task._id); setMenuOpen(false); }}>
-                <Trash2 size={12} /> Delete
+              <button style={{ ...cardS.menuItem, color: '#FF453A' }} onClick={() => { onDelete(task._id); setMenuOpen(false); }}>
+                <Trash2 size={11} /> Delete
               </button>
             </div>
           )}
@@ -148,24 +137,24 @@ const TaskCard = ({ task, onEdit, onDelete, onStatusChange }) => {
       </div>
 
       {task.description && (
-        <p style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 10, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', lineHeight: 1.5 }}>
+        <p style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 9, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', lineHeight: 1.5 }}>
           {task.description}
         </p>
       )}
 
       {task.tags?.length > 0 && (
-        <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', marginBottom: 10 }}>
+        <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', marginBottom: 9 }}>
           {task.tags.map(tag => (
-            <span key={tag} style={{ fontSize: 10, padding: '2px 7px', borderRadius: 999, background: 'rgba(200,169,126,0.1)', color: 'var(--gold)', border: '1px solid rgba(200,169,126,0.15)' }}>{tag}</span>
+            <span key={tag} style={{ fontSize: 10, padding: '2px 6px', borderRadius: 999, background: 'var(--green-dim)', color: 'var(--green)', border: '1px solid var(--green-border)' }}>{tag}</span>
           ))}
         </div>
       )}
 
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 8 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 8, gap: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           {task.assignee ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-              <div className="avatar" style={{ width: 22, height: 22, fontSize: 9 }}>
+              <div className="avatar" style={{ width: 20, height: 20, fontSize: 8 }}>
                 {task.assignee.name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2)}
               </div>
               <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{task.assignee.name?.split(' ')[0]}</span>
@@ -177,7 +166,7 @@ const TaskCard = ({ task, onEdit, onDelete, onStatusChange }) => {
           )}
         </div>
         {task.deadline && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: isOverdue ? '#E07B6A' : 'var(--text-muted)', fontWeight: isOverdue ? 600 : 400 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 3, fontSize: 11, color: isOverdue ? '#FF453A' : 'var(--text-muted)', fontWeight: isOverdue ? 600 : 400 }}>
             <Calendar size={11} />
             {format(new Date(task.deadline), 'MMM d')}
           </div>
@@ -187,6 +176,33 @@ const TaskCard = ({ task, onEdit, onDelete, onStatusChange }) => {
   );
 };
 
+const cardS = {
+  wrap: {
+    background: 'var(--bg-card)',
+    border: '1px solid rgba(255,255,255,0.05)',
+    borderRadius: 'var(--radius-sm)',
+    padding: '13px',
+    boxShadow: 'var(--shadow-sm)',
+    transition: 'var(--transition)',
+    cursor: 'pointer',
+  },
+  menu: {
+    position: 'absolute', right: 0, top: '100%', zIndex: 50,
+    background: 'var(--bg-elevated)', border: '1px solid rgba(255,255,255,0.08)',
+    borderRadius: 'var(--radius-sm)', boxShadow: 'var(--shadow-lg)',
+    minWidth: 150, overflow: 'hidden',
+  },
+  menuItem: {
+    display: 'flex', alignItems: 'center', gap: 7,
+    width: '100%', padding: '8px 14px',
+    background: 'none', border: 'none', cursor: 'pointer',
+    fontSize: 13, color: 'var(--text-secondary)',
+    textAlign: 'left', transition: 'var(--transition)',
+    fontFamily: 'var(--font-body)',
+  },
+};
+
+/* ── Main Page ── */
 const ProjectDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -196,41 +212,31 @@ const ProjectDetail = () => {
   const [loading, setLoading] = useState(true);
   const [showTaskModal, setShowTaskModal] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
-  const [defaultStatus, setDefaultStatus] = useState('todo');
 
   const fetchData = useCallback(async () => {
     try {
       const [pRes, tRes] = await Promise.all([api.get(`/projects/${id}`), api.get(`/tasks/project/${id}`)]);
       setProject(pRes.data); setTasks(tRes.data);
-    } catch (err) {
-      toast.error('Failed to load project'); navigate('/projects');
-    } finally { setLoading(false); }
+    } catch { toast.error('Failed to load project'); navigate('/projects'); }
+    finally { setLoading(false); }
   }, [id, navigate]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
-  const handleAddTask = (status) => { setDefaultStatus(status); setEditingTask(null); setShowTaskModal(true); };
-  const handleEditTask = (task) => { setEditingTask(task); setShowTaskModal(true); };
-
-  const handleSaveTask = (savedTask, isEdit) => {
-    if (isEdit) setTasks(prev => prev.map(t => t._id === savedTask._id ? savedTask : t));
-    else setTasks(prev => [...prev, savedTask]);
+  const handleSaveTask = (saved, isEdit) => {
+    if (isEdit) setTasks(prev => prev.map(t => t._id === saved._id ? saved : t));
+    else setTasks(prev => [...prev, saved]);
   };
 
   const handleDeleteTask = async (taskId) => {
     if (!window.confirm('Delete this task?')) return;
-    try {
-      await api.delete(`/tasks/${taskId}`);
-      setTasks(prev => prev.filter(t => t._id !== taskId));
-      toast.success('Task deleted');
-    } catch { toast.error('Failed to delete task'); }
+    try { await api.delete(`/tasks/${taskId}`); setTasks(prev => prev.filter(t => t._id !== taskId)); toast.success('Deleted'); }
+    catch { toast.error('Failed'); }
   };
 
-  const handleStatusChange = async (taskId, newStatus) => {
-    try {
-      const res = await api.put(`/tasks/${taskId}`, { status: newStatus });
-      setTasks(prev => prev.map(t => t._id === taskId ? res.data : t));
-    } catch { toast.error('Failed to update task'); }
+  const handleStatusChange = async (taskId, status) => {
+    try { const res = await api.put(`/tasks/${taskId}`, { status }); setTasks(prev => prev.map(t => t._id === taskId ? res.data : t)); }
+    catch { toast.error('Failed'); }
   };
 
   if (loading) return <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 80 }}><div className="loader" /></div>;
@@ -239,76 +245,81 @@ const ProjectDetail = () => {
   const total = tasks.length;
   const done = tasks.filter(t => t.status === 'done').length;
   const progress = total > 0 ? Math.round((done / total) * 100) : 0;
-  const isOwner = project.owner?._id === user?._id || project.owner === user?._id;
 
   return (
-    <div className="fade-in" style={{ minHeight: '100%' }}>
+    <div className="fade-in">
       {/* Header */}
-      <div style={{ marginBottom: 28 }}>
-        <button className="btn btn-ghost" onClick={() => navigate('/projects')} style={{ marginBottom: 16, padding: '6px 12px', fontSize: 13 }}>
-          <ArrowLeft size={14} /> Back to Projects
+      <div style={{ marginBottom: 22 }}>
+        <button className="btn btn-ghost" onClick={() => navigate('/projects')}
+          style={{ marginBottom: 14, padding: '6px 12px', fontSize: 13 }}>
+          <ArrowLeft size={14} /> Back
         </button>
-        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 6 }}>
-              <div style={{ width: 14, height: 14, borderRadius: '50%', background: project.color }} />
-              <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 32, fontWeight: 500, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
-                {project.name}
-              </h1>
+
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 5, flexWrap: 'wrap' }}>
+              <div style={{ width: 12, height: 12, borderRadius: '50%', background: project.color, flexShrink: 0 }} />
+              <h1 className="page-title" style={{ fontSize: 'clamp(20px, 4vw, 30px)' }}>{project.name}</h1>
             </div>
-            {project.description && <p style={{ fontSize: 14, color: 'var(--text-muted)', maxWidth: 600 }}>{project.description}</p>}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginTop: 12, flexWrap: 'wrap' }}>
+            {project.description && (
+              <p style={{ fontSize: 13, color: 'var(--text-muted)', maxWidth: 560, marginBottom: 10 }}>{project.description}</p>
+            )}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
               {project.deadline && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 13, color: 'var(--text-muted)' }}>
-                  <Calendar size={13} /> Due {format(new Date(project.deadline), 'MMM d, yyyy')}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, color: 'var(--text-muted)' }}>
+                  <Calendar size={12} /> Due {format(new Date(project.deadline), 'MMM d, yyyy')}
                 </div>
               )}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 13, color: 'var(--text-muted)' }}>
-                <Users size={13} /> {project.members?.length || 1} member{project.members?.length !== 1 ? 's' : ''}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, color: 'var(--text-muted)' }}>
+                <Users size={12} /> {project.members?.length || 1} member{project.members?.length !== 1 ? 's' : ''}
               </div>
-              <div style={{ fontSize: 13, color: 'var(--gold)' }}>{progress}% complete</div>
+              <span style={{ fontSize: 12, color: 'var(--green)', fontWeight: 600 }}>{progress}% complete</span>
             </div>
           </div>
-          <button className="btn btn-primary" onClick={() => handleAddTask('todo')}>
-            <Plus size={16} /> Add Task
+          <button className="btn btn-primary" onClick={() => { setEditingTask(null); setShowTaskModal(true); }} style={{ flexShrink: 0 }}>
+            <Plus size={15} /> Add Task
           </button>
         </div>
 
         {/* Progress */}
-        <div style={{ marginTop: 20, maxWidth: 400 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6, fontSize: 12, color: 'var(--text-muted)' }}>
-            <span>{done} of {total} tasks completed</span>
+        <div style={{ marginTop: 16, maxWidth: 380 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5, fontSize: 12, color: 'var(--text-muted)' }}>
+            <span>{done} of {total} tasks done</span>
           </div>
-          <div className="progress-bar" style={{ height: 6 }}>
+          <div className="progress-bar" style={{ height: 5 }}>
             <div className="progress-fill" style={{ width: `${progress}%`, background: project.color }} />
           </div>
         </div>
       </div>
 
-      {/* Kanban Board */}
-      <div style={styles.kanban}>
+      {/* Kanban */}
+      <div className="kanban-board">
         {COLUMNS.map(col => {
           const colTasks = tasks.filter(t => t.status === col.id);
           return (
-            <div key={col.id} style={styles.column}>
-              <div style={styles.columnHeader}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: col.color }} />
-                  <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{col.label}</span>
-                  <span style={{ fontSize: 11, color: 'var(--text-muted)', background: 'var(--bg-elevated)', padding: '1px 7px', borderRadius: 999 }}>{colTasks.length}</span>
+            <div key={col.id} style={{ background: 'var(--bg-surface)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 'var(--radius)', boxShadow: 'var(--shadow-sm)', minWidth: 0 }}>
+              {/* Column header */}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '13px 14px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+                  <div style={{ width: 7, height: 7, borderRadius: '50%', background: col.color }} />
+                  <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>{col.label}</span>
+                  <span style={{ fontSize: 11, color: 'var(--text-muted)', background: 'var(--bg-elevated)', padding: '1px 6px', borderRadius: 999 }}>{colTasks.length}</span>
                 </div>
-                <button className="btn btn-icon" onClick={() => handleAddTask(col.id)} style={{ padding: 4 }}>
-                  <Plus size={14} />
+                <button className="btn btn-icon" onClick={() => { setEditingTask(null); setShowTaskModal(true); }} style={{ padding: 3 }}>
+                  <Plus size={13} />
                 </button>
               </div>
-              <div style={styles.taskList}>
+              {/* Cards */}
+              <div style={{ padding: '10px', display: 'flex', flexDirection: 'column', gap: 7, minHeight: 80 }}>
                 {colTasks.map(task => (
-                  <TaskCard key={task._id} task={task} onEdit={handleEditTask}
-                    onDelete={handleDeleteTask} onStatusChange={handleStatusChange} />
+                  <TaskCard key={task._id} task={task}
+                    onEdit={t => { setEditingTask(t); setShowTaskModal(true); }}
+                    onDelete={handleDeleteTask}
+                    onStatusChange={handleStatusChange} />
                 ))}
                 {colTasks.length === 0 && (
-                  <div style={styles.emptyCol}>
-                    <p style={{ fontSize: 12, color: 'var(--text-dim)' }}>No tasks</p>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px 10px', borderRadius: 'var(--radius-sm)', border: '1px dashed var(--text-dim)' }}>
+                    <p style={{ fontSize: 12, color: 'var(--text-dim)' }}>Empty</p>
                   </div>
                 )}
               </div>
@@ -319,63 +330,12 @@ const ProjectDetail = () => {
 
       {showTaskModal && (
         <TaskModal
-          task={editingTask}
-          projectId={id}
-          members={project.members || []}
+          task={editingTask} projectId={id} members={project.members || []}
           onClose={() => { setShowTaskModal(false); setEditingTask(null); }}
-          onSave={handleSaveTask}
-        />
+          onSave={handleSaveTask} />
       )}
     </div>
   );
-};
-
-const styles = {
-  kanban: {
-    display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)',
-    gap: 16, alignItems: 'start', minHeight: 400,
-    overflowX: 'auto'
-  },
-  column: {
-    background: 'var(--bg-surface)',
-    border: '1px solid rgba(255,255,255,0.04)',
-    borderRadius: 'var(--radius)',
-    minWidth: 240,
-    boxShadow: 'var(--shadow-sm)'
-  },
-  columnHeader: {
-    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-    padding: '14px 16px', borderBottom: '1px solid rgba(255,255,255,0.04)'
-  },
-  taskList: { padding: '12px', display: 'flex', flexDirection: 'column', gap: 8, minHeight: 100 },
-  taskCard: {
-    background: 'var(--bg-card)',
-    border: '1px solid rgba(255,255,255,0.04)',
-    borderRadius: 'var(--radius-sm)',
-    padding: '14px',
-    cursor: 'pointer',
-    boxShadow: 'var(--shadow-sm)',
-    transition: 'var(--transition)',
-  },
-  emptyCol: {
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-    padding: '24px', borderRadius: 'var(--radius-sm)',
-    border: '1px dashed var(--text-dim)'
-  },
-  menu: {
-    position: 'absolute', right: 0, top: '100%', zIndex: 50,
-    background: 'var(--bg-elevated)', border: '1px solid rgba(255,255,255,0.08)',
-    borderRadius: 'var(--radius-sm)', boxShadow: 'var(--shadow-lg)',
-    minWidth: 160, overflow: 'hidden'
-  },
-  menuItem: {
-    display: 'flex', alignItems: 'center', gap: 8,
-    width: '100%', padding: '9px 14px',
-    background: 'none', border: 'none', cursor: 'pointer',
-    fontSize: 13, color: 'var(--text-secondary)',
-    textAlign: 'left', transition: 'var(--transition)',
-    fontFamily: 'var(--font-body)'
-  }
 };
 
 export default ProjectDetail;
