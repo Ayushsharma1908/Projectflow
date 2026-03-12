@@ -1,0 +1,94 @@
+# ========================
+# Dependencies
+# ========================
+node_modules/
+client/node_modules/
+server/node_modules/
+/.pnp
+.pnp.js
+.yarn/
+
+# ========================
+# Environment Variables
+# ========================
+.env
+.env.local
+.env.development
+.env.development.local
+.env.test.local
+.env.production
+.env.production.local
+server/.env
+
+# ========================
+# Build Outputs
+# ========================
+/client/build
+/client/dist
+/server/dist
+build/
+dist/
+
+# ========================
+# Logs
+# ========================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# ========================
+# Runtime & Cache
+# ========================
+.cache/
+.parcel-cache/
+.next/
+.nuxt/
+.vuepress/dist
+.eslintcache
+.stylelintcache
+*.tsbuildinfo
+
+# ========================
+# OS Files
+# ========================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ========================
+# IDE & Editor
+# ========================
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.sublime-project
+*.sublime-workspace
+
+# ========================
+# Testing
+# ========================
+coverage/
+.nyc_output/
+/client/coverage
+
+# ========================
+# Misc
+# ========================
+*.pem
+*.key
+*.cert
+.vercel
+.netlify
