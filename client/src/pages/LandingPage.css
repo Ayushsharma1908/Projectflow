@@ -164,27 +164,38 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-  padding-top: 130px;
-  text-align: center;
+  justify-content: center;
+  padding-top: 80px;
+  text-align: left;
   overflow: hidden;
 }
 .lp-hero-bg-glow {
   position: absolute;
-  top: -200px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 800px;
-  height: 600px;
+  top: 0;
+  left: 0;
+  width: 1000px;
+  height: 800px;
   background: radial-gradient(ellipse at center, rgba(37,211,102,0.08) 0%, rgba(37,211,102,0.02) 40%, transparent 70%);
   pointer-events: none;
   z-index: 0;
 }
+.lp-hero-inner {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1240px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 24px;
+  z-index: 2;
+  gap: 40px;
+}
 .lp-hero-content {
   position: relative;
   z-index: 2;
-  max-width: 720px;
-  padding: 0 24px;
+  flex: 1;
+  max-width: 580px;
   animation: heroFadeIn 1s ease-out forwards;
 }
 @keyframes heroFadeIn {
@@ -246,15 +257,15 @@
   font-size: clamp(16px, 2vw, 18px);
   line-height: 1.65;
   color: var(--lp-text-secondary);
-  max-width: 560px;
-  margin: 0 auto 36px;
+  max-width: 100%;
+  margin: 0 0 36px 0;
   font-weight: 400;
   animation: heroFadeIn 0.8s ease-out 0.45s both;
 }
 .lp-hero-actions {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 14px;
   flex-wrap: wrap;
   margin-bottom: 18px;
@@ -268,8 +279,10 @@
 
 /* ── Network animation canvas ── */
 .lp-network-wrap {
-  position: absolute;
-  inset: 0;
+  flex: 1;
+  max-width: 600px;
+  height: 550px;
+  position: relative;
   z-index: 1;
   pointer-events: none;
 }
@@ -685,6 +698,30 @@
 
 /* ═══ Responsive ═══ */
 @media (max-width: 900px) {
+  .lp-hero {
+    text-align: center;
+    padding-top: 100px;
+  }
+  .lp-hero-inner {
+    flex-direction: column;
+    text-align: center;
+    gap: 0;
+  }
+  .lp-hero-content {
+    max-width: 100%;
+    margin: 0 auto;
+  }
+  .lp-hero-sub {
+    margin: 0 auto 36px;
+  }
+  .lp-hero-actions {
+    justify-content: center;
+  }
+  .lp-network-wrap {
+    height: 400px;
+    width: 100%;
+    margin-top: 20px;
+  }
   .lp-features-grid {
     grid-template-columns: repeat(2, 1fr);
   }

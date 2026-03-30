@@ -357,34 +357,36 @@ export default function LandingPage() {
       {/* ── Hero ── */}
       <section className="lp-hero">
         <div className="lp-hero-bg-glow" />
-        <div className="lp-hero-content">
-          <div className="lp-badge-pill">
-            <span className="lp-badge-dot" />
-            Now in public beta · Free forever
+        <div className="lp-hero-inner">
+          <div className="lp-hero-content">
+            <div className="lp-badge-pill">
+              <span className="lp-badge-dot" />
+              Now in public beta · Free forever
+            </div>
+            <h1 className="lp-hero-headline">
+              Manage projects like a&nbsp;<br />
+              <TypingText words={['pro team.', 'machine.', 'founder.', 'rocket ship.']} />
+            </h1>
+            <p className="lp-hero-sub">
+              ProjectFlow gives your team one place to plan sprints, track tasks,
+              and ship faster — with real-time collaboration built in from day one.
+            </p>
+            <div className="lp-hero-actions">
+              <Link to="/register" className="lp-btn-primary lp-btn-large">
+                Start for free
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </Link>
+              <Link to="/login" className="lp-btn-ghost lp-btn-large">
+                View demo
+              </Link>
+            </div>
+            <p className="lp-hero-note">No credit card required · Setup in 2 minutes</p>
           </div>
-          <h1 className="lp-hero-headline">
-            Manage projects like a&nbsp;
-            <TypingText words={['pro team.', 'machine.', 'founder.', 'rocket ship.']} />
-          </h1>
-          <p className="lp-hero-sub">
-            ProjectFlow gives your team one place to plan sprints, track tasks,
-            and ship faster — with real-time collaboration built in from day one.
-          </p>
-          <div className="lp-hero-actions">
-            <Link to="/register" className="lp-btn-primary lp-btn-large">
-              Start for free
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-            </Link>
-            <Link to="/login" className="lp-btn-ghost lp-btn-large">
-              View demo
-            </Link>
-          </div>
-          <p className="lp-hero-note">No credit card required · Setup in 2 minutes</p>
-        </div>
 
-        {/* Network animation canvas */}
-        <div className="lp-network-wrap">
-          <NetworkCanvas />
+          {/* Network animation canvas */}
+          <div className="lp-network-wrap">
+            <NetworkCanvas />
+          </div>
         </div>
       </section>
 
