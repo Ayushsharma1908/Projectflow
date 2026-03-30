@@ -8,6 +8,7 @@ import Dashboard from './pages/Dashboard';
 import Projects from './pages/Projects';
 import ProjectDetail from './pages/ProjectDetail';
 import MyTasks from './pages/MyTasks';
+import LandingPage from './pages/LandingPage';
 import Layout from './components/Layout';
 import './App.css';
 
@@ -24,7 +25,7 @@ const ProtectedRoute = ({ children }) => {
 const PublicRoute = ({ children }) => {
   const { user, loading } = useAuth();
   if (loading) return null;
-  return !user ? children : <Navigate to="/dashboard" />;
+  return !user ? children : <Navigate to="/app/dashboard" />;
 };
 
 function App() {
@@ -47,10 +48,11 @@ function App() {
           }}
         />
         <Routes>
+          <Route path="/" element={<PublicRoute><LandingPage /></PublicRoute>} />
           <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
           <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
-          <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
-            <Route index element={<Navigate to="/dashboard" />} />
+          <Route path="/app" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
+            <Route index element={<Navigate to="/app/dashboard" />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="projects" element={<Projects />} />
             <Route path="projects/:id" element={<ProjectDetail />} />
