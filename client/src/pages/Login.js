@@ -81,28 +81,28 @@ const styles = {
   decorLeft: {
     position: 'absolute', left: '-10%', top: '20%',
     width: 500, height: 500, borderRadius: '50%',
-    background: 'radial-gradient(circle, rgba(200,169,126,0.05) 0%, transparent 70%)',
+    background: 'radial-gradient(circle, rgba(37,211,102,0.08) 0%, transparent 70%)',
     pointerEvents: 'none'
   },
   decorRight: {
     position: 'absolute', right: '-10%', bottom: '20%',
     width: 400, height: 400, borderRadius: '50%',
-    background: 'radial-gradient(circle, rgba(155,143,212,0.04) 0%, transparent 70%)',
+    background: 'radial-gradient(circle, rgba(37,211,102,0.05) 0%, transparent 70%)',
     pointerEvents: 'none'
   },
   card: {
     background: 'var(--bg-elevated)',
-    border: '1px solid var(--gold-border)',
+    border: '1px solid var(--green-border)',
     borderRadius: 'var(--radius-lg)',
-    boxShadow: 'var(--shadow-xl), 0 0 60px rgba(200,169,126,0.06)',
+    boxShadow: 'var(--shadow-xl), 0 0 60px rgba(37,211,102,0.06)',
     padding: '40px', width: '100%', maxWidth: 420, position: 'relative'
   },
   logoRow: { display: 'flex', alignItems: 'center', gap: 10, marginBottom: 28 },
   logoIcon: {
     width: 34, height: 34,
-    background: 'linear-gradient(135deg, var(--gold), #B08040)',
+    background: 'linear-gradient(135deg, #25D366, #128C7E)',
     borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center',
-    color: '#0F0E0C', boxShadow: '0 2px 12px rgba(200,169,126,0.3)'
+    color: '#0D1F16', boxShadow: '0 2px 14px rgba(37,211,102,0.35)'
   },
   logoText: { fontFamily: 'var(--font-display)', fontSize: 20, fontWeight: 600, color: 'var(--text-primary)' },
   title: {

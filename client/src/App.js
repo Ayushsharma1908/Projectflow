@@ -15,7 +15,7 @@ import './App.css';
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
   if (loading) return (
-    <div style={{ display:'flex', alignItems:'center', justifyContent:'center', height:'100vh', background:'#0F0E0C' }}>
+    <div style={{ display:'flex', alignItems:'center', justifyContent:'center', height:'100vh', background:'var(--bg-base)' }}>
       <div className="loader" />
     </div>
   );
@@ -36,15 +36,15 @@ function App() {
           position="top-right"
           toastOptions={{
             style: {
-              background: '#1A1916',
-              color: '#E8E0D4',
-              border: '1px solid rgba(200,169,126,0.2)',
-              fontFamily: "'DM Sans', sans-serif",
+              background: '#18181B',
+              color: '#F2F2F7',
+              border: '1px solid rgba(255,255,255,0.06)',
+              fontFamily: "'Inter', -apple-system, sans-serif",
               fontSize: '14px',
               boxShadow: '0 8px 32px rgba(0,0,0,0.4)'
             },
-            success: { iconTheme: { primary: '#C8A97E', secondary: '#0F0E0C' } },
-            error: { iconTheme: { primary: '#E07B6A', secondary: '#0F0E0C' } }
+            success: { iconTheme: { primary: '#25D366', secondary: '#0A0A0B' } },
+            error: { iconTheme: { primary: '#FF453A', secondary: '#0A0A0B' } }
           }}
         />
         <Routes>
