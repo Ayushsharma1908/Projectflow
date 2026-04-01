@@ -24,7 +24,11 @@ const ProtectedRoute = ({ children }) => {
 
 const PublicRoute = ({ children }) => {
   const { user, loading } = useAuth();
-  if (loading) return null;
+  if (loading) return (
+    <div style={{ display:'flex', alignItems:'center', justifyContent:'center', height:'100vh', background:'var(--bg-base)' }}>
+      <div className="loader" />
+    </div>
+  );
   return !user ? children : <Navigate to="/app/dashboard" />;
 };
 
@@ -58,6 +62,7 @@ function App() {
             <Route path="projects/:id" element={<ProjectDetail />} />
             <Route path="my-tasks" element={<MyTasks />} />
           </Route>
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

@@ -31,9 +31,9 @@ const Layout = () => {
   const initials = user?.name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'U';
 
   const navItems = [
-    { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-    { to: '/projects', icon: FolderKanban, label: 'Projects' },
-    { to: '/my-tasks', icon: CheckSquare, label: 'My Tasks' },
+    { to: '/app/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+    { to: '/app/projects', icon: FolderKanban, label: 'Projects' },
+    { to: '/app/my-tasks', icon: CheckSquare, label: 'My Tasks' },
   ];
 
   const closeSidebar = () => setSidebarOpen(false);
