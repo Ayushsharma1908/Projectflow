@@ -12,6 +12,9 @@ A sleek, professional project management tool built with React, Node.js, Express
 
 ---
 
+
+## Repo
+-- **TEch**: frotend
 ## Prerequisites
 
 Make sure you have these installed:
