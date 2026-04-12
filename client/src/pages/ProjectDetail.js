@@ -103,7 +103,7 @@ const TaskCard = ({ task, onEdit, onDelete, onStatusChange }) => {
   const isOverdue = task.deadline && isAfter(new Date(), new Date(task.deadline)) && task.status !== 'done';
 
   return (
-    <div style={cardS.wrap}>
+    <div className="card" style={{ padding: '13px', cursor: 'pointer' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 9 }}>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 4 }}>
@@ -177,15 +177,6 @@ const TaskCard = ({ task, onEdit, onDelete, onStatusChange }) => {
 };
 
 const cardS = {
-  wrap: {
-    background: 'var(--bg-card)',
-    border: '1px solid rgba(255,255,255,0.05)',
-    borderRadius: 'var(--radius-sm)',
-    padding: '13px',
-    boxShadow: 'var(--shadow-sm)',
-    transition: 'var(--transition)',
-    cursor: 'pointer',
-  },
   menu: {
     position: 'absolute', right: 0, top: '100%', zIndex: 50,
     background: 'var(--bg-elevated)', border: '1px solid rgba(255,255,255,0.08)',

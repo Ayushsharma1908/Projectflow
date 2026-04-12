@@ -41,6 +41,7 @@ const Layout = () => {
 
   return (
     <div style={s.wrapper}>
+      <div className="app-bg-glow" />
       {/* Mobile overlay — only when sidebar is open on mobile */}
       {isMobile && sidebarOpen && (
         <div style={s.overlay} onClick={closeSidebar} />
@@ -54,10 +55,10 @@ const Layout = () => {
       }}>
         {/* Logo + close button */}
         <div style={s.logoWrap}>
-          <div style={s.logoIcon}>
-            <Workflow size={17} strokeWidth={2.2} color="#0D1F16" />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
+            <span className="logo-dot" />
+            <span style={s.logoText}>ProjectFlow</span>
           </div>
-          <span style={s.logoText}>ProjectFlow</span>
           {/* Close button inside sidebar */}
           <button
             onClick={closeSidebar}
@@ -115,9 +116,7 @@ const Layout = () => {
             <Menu size={20} />
           </button>
           <div style={s.topbarLogo}>
-            <div style={{ ...s.logoIcon, width: 26, height: 26 }}>
-              <Workflow size={13} strokeWidth={2.2} color="#0D1F16" />
-            </div>
+            <span className="logo-dot" style={{ width: 8, height: 8 }} />
             <span style={{ ...s.logoText, fontSize: 15 }}>ProjectFlow</span>
           </div>
           {/* Right side user avatar on mobile */}
@@ -155,7 +154,9 @@ const s = {
     position: 'fixed',
     top: 0, left: 0, bottom: 0,
     width: 224,
-    background: 'var(--bg-surface)',
+    background: 'rgba(17,17,19,0.72)',
+    backdropFilter: 'blur(20px) saturate(1.6)',
+    WebkitBackdropFilter: 'blur(20px) saturate(1.6)',
     borderRight: '1px solid rgba(255,255,255,0.06)',
     display: 'flex', flexDirection: 'column',
     boxShadow: '4px 0 30px rgba(0,0,0,0.5)',
@@ -167,18 +168,10 @@ const s = {
     zIndex: 99,
   },
   logoWrap: {
-    display: 'flex', alignItems: 'center', gap: 10,
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
     padding: '16px 14px',
     borderBottom: '1px solid rgba(255,255,255,0.05)',
     minHeight: 58,
-  },
-  logoIcon: {
-    width: 32, height: 32,
-    background: 'linear-gradient(135deg, #25D366, #128C7E)',
-    borderRadius: 9,
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-    boxShadow: '0 2px 14px rgba(37,211,102,0.35)',
-    flexShrink: 0,
   },
   logoText: {
     fontSize: 16, fontWeight: 700,
@@ -245,7 +238,9 @@ const s = {
     padding: '0 16px',
     height: 58, minHeight: 58,
     borderBottom: '1px solid rgba(255,255,255,0.05)',
-    background: 'var(--bg-surface)',
+    background: 'rgba(10,10,11,0.82)',
+    backdropFilter: 'blur(20px) saturate(1.6)',
+    WebkitBackdropFilter: 'blur(20px) saturate(1.6)',
     flexShrink: 0,
   },
   topbarLogo: {

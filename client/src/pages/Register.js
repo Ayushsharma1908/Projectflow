@@ -30,7 +30,7 @@ const Register = () => {
       <div style={styles.decor} />
       <div style={styles.card} className="fade-in">
         <div style={styles.logoRow}>
-          <div style={styles.logoIcon}><Zap size={18} strokeWidth={2.5} /></div>
+          <span className="logo-dot" />
           <span style={styles.logoText}>ProjectFlow</span>
         </div>
         <h1 style={styles.title}>Get started</h1>
@@ -85,12 +85,6 @@ const styles = {
     padding: '40px', width: '100%', maxWidth: 420
   },
   logoRow: { display: 'flex', alignItems: 'center', gap: 10, marginBottom: 28 },
-  logoIcon: {
-    width: 34, height: 34,
-    background: 'linear-gradient(135deg, #25D366, #128C7E)',
-    borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center',
-    color: '#0D1F16', boxShadow: '0 2px 14px rgba(37,211,102,0.35)'
-  },
   logoText: { fontFamily: 'var(--font-display)', fontSize: 20, fontWeight: 600, color: 'var(--text-primary)' },
   title: {
     fontFamily: 'var(--font-display)', fontSize: 32, fontWeight: 500,

@@ -7,6 +7,35 @@ import { format, isAfter, addDays } from 'date-fns';
 
 const priorityColors = { low: '#30D158', medium: '#FFD60A', high: '#FF9F0A', critical: '#FF453A' };
 
+function TypingText({ words }) {
+  const [wordIndex, setWordIndex] = useState(0);
+  const [charIndex, setCharIndex] = useState(0);
+  const [deleting, setDeleting] = useState(false);
+  const [text, setText] = useState('');
+
+  useEffect(() => {
+    const currentWord = words[wordIndex];
+    let timeout;
+    if (!deleting && charIndex < currentWord.length) {
+      timeout = setTimeout(() => { setText(currentWord.slice(0, charIndex + 1)); setCharIndex(c => c + 1); }, 80);
+    } else if (!deleting && charIndex === currentWord.length) {
+      timeout = setTimeout(() => setDeleting(true), 1800);
+    } else if (deleting && charIndex > 0) {
+      timeout = setTimeout(() => { setText(currentWord.slice(0, charIndex - 1)); setCharIndex(c => c - 1); }, 45);
+    } else if (deleting && charIndex === 0) {
+      setDeleting(false); setWordIndex(i => (i + 1) % words.length);
+    }
+    return () => clearTimeout(timeout);
+  }, [charIndex, deleting, wordIndex, words]);
+
+  return (
+    <span style={{ color: 'var(--green)' }}>
+      {text}
+      <span style={{ animation: 'cursorBlink 0.75s step-end infinite', marginLeft: 1 }}>|</span>
+    </span>
+  );
+}
+
 const StatCard = ({ icon: Icon, label, value, sub, color }) => (
   <div className="card" style={{ padding: '18px 20px' }}>
     <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10 }}>
@@ -61,7 +90,7 @@ const Dashboard = () => {
           <span style={{ color: 'var(--green)' }}>{user?.name?.split(' ')[0]}</span>
         </h1>
         <p style={{ fontSize: 14, color: 'var(--text-muted)', marginTop: 5 }}>
-          Here's what's happening across your projects.
+          Let's build <TypingText words={['something great.', 'faster.', 'the future.']} />
         </p>
       </div>
 
