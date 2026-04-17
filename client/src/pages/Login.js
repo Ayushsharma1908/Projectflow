@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Zap, Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 import toast from 'react-hot-toast';
+import './LandingPage.css';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -27,46 +28,78 @@ const Login = () => {
   };
 
   return (
-    <div style={styles.page}>
-      <div style={styles.decorLeft} />
-      <div style={styles.decorRight} />
+    <div className="lp-root" style={styles.page}>
+      <div className="lp-hero-bg-glow" style={{ top: '50%', left: '50%', transform: 'translate(-50%, -50%)', opacity: 0.6 }} />
+      
       <div style={styles.card} className="fade-in">
-        <div style={styles.logoRow}>
-          <span className="logo-dot" />
-          <span style={styles.logoText}>ProjectFlow</span>
+        <Link to="/" style={{ textDecoration: 'none' }}>
+          <div className="lp-logo" style={{ justifyContent: 'center', marginBottom: '32px' }}>
+            <span className="lp-logo-dot" />
+            ProjectFlow
+          </div>
+        </Link>
+        
+        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+          <h1 style={styles.title}>Welcome back</h1>
+          <p style={styles.subtitle}>Sign in to continue your work</p>
         </div>
-        <h1 style={styles.title}>Welcome back</h1>
-        <p style={styles.subtitle}>Sign in to continue your work</p>
 
         <form onSubmit={handleSubmit} style={styles.form}>
-          <div className="form-group">
-            <label className="form-label">Email</label>
-            <input type="email" value={email} onChange={e => setEmail(e.target.value)}
-              placeholder="you@example.com" required autoFocus />
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Email Address</label>
+            <input 
+              type="email" 
+              value={email} 
+              onChange={e => setEmail(e.target.value)}
+              placeholder="you@example.com" 
+              required 
+              autoFocus 
+              style={styles.input}
+            />
           </div>
-          <div className="form-group">
-            <label className="form-label">Password</label>
+          
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Password</label>
             <div style={{ position: 'relative' }}>
-              <input type={showPass ? 'text' : 'password'} value={password}
+              <input 
+                type={showPass ? 'text' : 'password'} 
+                value={password}
                 onChange={e => setPassword(e.target.value)}
-                placeholder="••••••••" required style={{ paddingRight: 44 }} />
-              <button type="button" onClick={() => setShowPass(!showPass)}
-                style={styles.eyeBtn}>
-                {showPass ? <EyeOff size={15} /> : <Eye size={15} />}
+                placeholder="••••••••" 
+                required 
+                style={{ ...styles.input, paddingRight: 44 }} 
+              />
+              <button 
+                type="button" 
+                onClick={() => setShowPass(!showPass)}
+                style={styles.eyeBtn}
+              >
+                {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
           </div>
-          <button type="submit" className="btn btn-primary" disabled={loading}
-            style={{ width: '100%', justifyContent: 'center', padding: '12px' }}>
+          
+          <button 
+            type="submit" 
+            className="lp-btn-primary lp-btn-large" 
+            disabled={loading}
+            style={{ width: '100%', justifyContent: 'center', marginTop: '12px' }}
+          >
             {loading ? 'Signing in...' : 'Sign In'}
+            {!loading && <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>}
           </button>
         </form>
 
         <div style={styles.divider}>
           <span style={styles.dividerText}>New to ProjectFlow?</span>
         </div>
-        <Link to="/register" className="btn btn-ghost" style={{ width: '100%', justifyContent: 'center' }}>
-          Create Account
+        
+        <Link 
+          to="/register" 
+          className="lp-btn-ghost" 
+          style={{ width: '100%', justifyContent: 'center', boxSizing: 'border-box' }}
+        >
+          Create an account
         </Link>
       </div>
     </div>
@@ -75,46 +108,87 @@ const Login = () => {
 
 const styles = {
   page: {
-    minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
-    background: 'var(--bg-base)', padding: 20, position: 'relative', overflow: 'hidden'
-  },
-  decorLeft: {
-    position: 'absolute', left: '-10%', top: '20%',
-    width: 500, height: 500, borderRadius: '50%',
-    background: 'radial-gradient(circle, rgba(37,211,102,0.08) 0%, transparent 70%)',
-    pointerEvents: 'none'
-  },
-  decorRight: {
-    position: 'absolute', right: '-10%', bottom: '20%',
-    width: 400, height: 400, borderRadius: '50%',
-    background: 'radial-gradient(circle, rgba(37,211,102,0.05) 0%, transparent 70%)',
-    pointerEvents: 'none'
+    minHeight: '100vh',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '20px',
+    position: 'relative'
   },
   card: {
-    background: 'var(--bg-elevated)',
-    border: '1px solid var(--green-border)',
-    borderRadius: 'var(--radius-lg)',
-    boxShadow: 'var(--shadow-xl), 0 0 60px rgba(37,211,102,0.06)',
-    padding: '40px', width: '100%', maxWidth: 420, position: 'relative'
+    background: 'var(--lp-surface)',
+    border: '1px solid var(--lp-border)',
+    borderRadius: 'var(--lp-radius)',
+    padding: '48px 40px',
+    width: '100%',
+    maxWidth: '440px',
+    position: 'relative',
+    zIndex: 10,
+    boxShadow: '0 8px 40px rgba(0, 0, 0, 0.4), 0 0 40px rgba(37, 211, 102, 0.04)'
   },
-  logoRow: { display: 'flex', alignItems: 'center', gap: 10, marginBottom: 28 },
-  logoText: { fontFamily: 'var(--font-display)', fontSize: 20, fontWeight: 600, color: 'var(--text-primary)' },
   title: {
-    fontFamily: 'var(--font-display)', fontSize: 32, fontWeight: 500,
-    color: 'var(--text-primary)', letterSpacing: '-0.02em', marginBottom: 8
+    fontSize: '28px',
+    fontWeight: '800',
+    color: 'var(--lp-text)',
+    letterSpacing: '-0.03em',
+    marginBottom: '8px'
   },
-  subtitle: { fontSize: 14, color: 'var(--text-muted)', marginBottom: 28 },
-  form: { marginBottom: 20 },
+  subtitle: {
+    fontSize: '15px',
+    color: 'var(--lp-text-secondary)'
+  },
+  formGroup: {
+    marginBottom: '20px'
+  },
+  label: {
+    display: 'block',
+    fontSize: '13px',
+    fontWeight: '600',
+    color: 'var(--lp-text-secondary)',
+    marginBottom: '8px',
+    textTransform: 'uppercase',
+    letterSpacing: '0.05em'
+  },
+  input: {
+    width: '100%',
+    padding: '14px 16px',
+    background: 'var(--lp-elevated)',
+    border: '1px solid var(--lp-border)',
+    borderRadius: 'var(--lp-radius-sm)',
+    color: 'var(--lp-text)',
+    fontSize: '15px',
+    outline: 'none',
+    transition: 'var(--lp-transition)',
+    boxSizing: 'border-box'
+  },
   eyeBtn: {
-    position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)',
-    background: 'none', border: 'none', cursor: 'pointer',
-    color: 'var(--text-muted)', display: 'flex', alignItems: 'center'
+    position: 'absolute',
+    right: '14px',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    background: 'none',
+    border: 'none',
+    cursor: 'pointer',
+    color: 'var(--lp-text-muted)',
+    display: 'flex',
+    alignItems: 'center',
+    padding: 0
   },
   divider: {
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-    margin: '20px 0'
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    margin: '32px 0 24px 0',
+    position: 'relative'
   },
-  dividerText: { fontSize: 13, color: 'var(--text-muted)' }
+  dividerText: {
+    fontSize: '13px',
+    color: 'var(--lp-text-muted)',
+    background: 'var(--lp-surface)',
+    padding: '0 12px',
+    position: 'relative',
+    zIndex: 1
+  }
 };
 
 export default Login;
