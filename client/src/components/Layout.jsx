@@ -48,7 +48,7 @@ const Layout = () => {
       <aside className={`fixed top-0 left-0 bottom-0 w-56 bg-[#111113]/70 backdrop-blur-[20px] saturate-[1.6] border-r border-white/5 flex flex-col shadow-[4px_0_30px_rgba(0,0,0,0.5)] z-[99] transition-transform duration-[280ms] ease-[cubic-bezier(0.4,0,0.2,1)] ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="flex items-center justify-between px-[14px] py-4 border-b border-white/5 min-h-[58px]">
           <div className="flex items-center gap-[9px]">
-            <span className="w-2 h-2 rounded-full bg-green shadow-[0_0_8px_var(--tw-colors-green-DEFAULT)]" />
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor" className="text-green"><path d="M480-560h200v-80H480v80Zm0 240h200v-80H480v80Zm-63.5-223.5Q440-567 440-600t-23.5-56.5Q393-680 360-680t-56.5 23.5Q280-633 280-600t23.5 56.5Q327-520 360-520t56.5-23.5Zm0 240Q440-327 440-360t-23.5-56.5Q393-440 360-440t-56.5 23.5Q280-393 280-360t23.5 56.5Q327-280 360-280t56.5-23.5ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm0-560v560-560Z"/> </svg>
             <span className="text-base font-bold text-text-primary tracking-tighter whitespace-nowrap">ProjectFlow</span>
           </div>
           <button onClick={closeSidebar} className="p-2 rounded-lg bg-bg-elevated hover:bg-bg-hover text-text-muted transition-colors ml-auto shrink-0" title="Close sidebar">
@@ -96,7 +96,7 @@ const Layout = () => {
             <Menu size={20} />
           </button>
           <div className="flex items-center gap-[9px]">
-            <span className="w-2 h-2 rounded-full bg-green shadow-[0_0_8px_var(--tw-colors-green-DEFAULT)]" />
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor" className="text-green"><path d="M480-560h200v-80H480v80Zm0 240h200v-80H480v80Zm-63.5-223.5Q440-567 440-600t-23.5-56.5Q393-680 360-680t-56.5 23.5Q280-633 280-600t23.5 56.5Q327-520 360-520t56.5-23.5Zm0 240Q440-327 440-360t-23.5-56.5Q393-440 360-440t-56.5 23.5Q280-393 280-360t23.5 56.5Q327-280 360-280t56.5-23.5ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm0-560v560-560Z"/> </svg>
             <span className="text-[15px] font-bold text-text-primary tracking-tighter">ProjectFlow</span>
           </div>
           {isMobile && (

@@ -36,7 +36,7 @@ const Login = () => {
         
         {/* Logo */}
         <Link to="/" className="flex items-center justify-center gap-2 mb-8 hover:opacity-80 transition-opacity">
-          <span className="w-2.5 h-2.5 rounded-full bg-green shadow-[0_0_12px_var(--tw-colors-green-dim),0_0_30px_var(--tw-colors-green-dim)] animate-pulse" />
+          <svg xmlns="http://www.w3.org/2000/svg" height="28px" viewBox="0 -960 960 960" width="28px" fill="currentColor" className="text-green"><path d="M480-560h200v-80H480v80Zm0 240h200v-80H480v80Zm-63.5-223.5Q440-567 440-600t-23.5-56.5Q393-680 360-680t-56.5 23.5Q280-633 280-600t23.5 56.5Q327-520 360-520t56.5-23.5Zm0 240Q440-327 440-360t-23.5-56.5Q393-440 360-440t-56.5 23.5Q280-393 280-360t23.5 56.5Q327-280 360-280t56.5-23.5ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm0-560v560-560Z"/> </svg>
           <span className="font-extrabold text-xl tracking-tight text-white">ProjectFlow</span>
         </Link>
         
