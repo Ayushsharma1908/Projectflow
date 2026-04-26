@@ -15,7 +15,7 @@ import './App.css';
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
   if (loading) return (
-    <div style={{ display:'flex', alignItems:'center', justifyContent:'center', height:'100vh', background:'var(--bg-base)' }}>
+    <div className="flex items-center justify-center h-screen bg-bg-base">
       <div className="loader" />
     </div>
   );
@@ -25,7 +25,7 @@ const ProtectedRoute = ({ children }) => {
 const PublicRoute = ({ children }) => {
   const { user, loading } = useAuth();
   if (loading) return (
-    <div style={{ display:'flex', alignItems:'center', justifyContent:'center', height:'100vh', background:'var(--bg-base)' }}>
+    <div className="flex items-center justify-center h-screen bg-bg-base">
       <div className="loader" />
     </div>
   );
