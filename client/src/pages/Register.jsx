@@ -51,7 +51,7 @@ const Register = () => {
             <input 
               value={form.name} 
               onChange={e => setForm({ ...form, name: e.target.value })}
-              placeholder="Jane Smith" 
+              placeholder="Ayush" 
               required 
               autoFocus 
               className="w-full px-4 py-3 bg-bg-elevated border border-white/10 rounded-lg text-[15px] text-white placeholder:text-text-muted focus:outline-none focus:border-green/50 focus:ring-1 focus:ring-green/50 transition-all"
@@ -64,7 +64,7 @@ const Register = () => {
               type="email" 
               value={form.email} 
               onChange={e => setForm({ ...form, email: e.target.value })}
-              placeholder="jane@example.com" 
+              placeholder="you@example.com" 
               required 
               className="w-full px-4 py-3 bg-bg-elevated border border-white/10 rounded-lg text-[15px] text-white placeholder:text-text-muted focus:outline-none focus:border-green/50 focus:ring-1 focus:ring-green/50 transition-all"
             />
