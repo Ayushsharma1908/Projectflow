@@ -109,7 +109,7 @@ const Login = () => {
           to="/register"
           className="w-full flex items-center justify-center py-3.5 bg-transparent border border-white/10 hover:border-green/30 hover:bg-white/5 text-text-secondary hover:text-white font-medium text-[15px] rounded-full transition-all"
         >
-          Create an account
+          Create your account
         </Link>
       </div>
     </div>
