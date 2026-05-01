@@ -14,7 +14,7 @@ const TaskGroup = ({ title, tasks, hexColor, onStatusUpdate }) => (
     <div className="flex items-center gap-2 mb-3">
       <div className="w-[7px] h-[7px] rounded-full" style={{ background: hexColor }} />
       <h2 className="text-xs font-bold text-text-muted uppercase tracking-[0.1em]">{title}</h2>
-      <span className="text-[11px] text-text-muted bg-bg-elevated px-2 py-px rounded-full">{tasks.length}</span>
+      <span className="text-[10px] text-text-muted bg-bg-elevated px-2 py-px rounded-full">{tasks.length}</span>
     </div>
     <div className="flex flex-col gap-2">
       {tasks.map(task => <TaskRow key={task._id} task={task} onStatusUpdate={onStatusUpdate} />)}
@@ -26,11 +26,11 @@ const TaskRow = ({ task, onStatusUpdate }) => {
   const isOverdue = task.deadline && isAfter(new Date(), new Date(task.deadline)) && task.status !== 'done';
   const statusColorClass = statusColors[task.status] || 'text-green';
   const priorityColor = priorityColors[task.priority] || '#30D158';
-  
+
   // Create a mapping to convert the text class to a border/bg representation dynamically
   // Since we know the colors, we can map them:
   const getStatusHex = (status) => {
-    switch(status) {
+    switch (status) {
       case 'todo': return '#71717A';
       case 'in-progress': return '#30D158';
       case 'review': return '#BF5AF2';
@@ -67,21 +67,21 @@ const TaskRow = ({ task, onStatusUpdate }) => {
           </div>
         )}
         <div className="flex items-center gap-3">
-           <div className="flex items-center gap-1.5 opacity-80 group-hover:opacity-100 transition-opacity">
-             <span className="text-[11px] text-text-muted uppercase tracking-widest hidden sm:inline-block">Priority</span>
-             <div className="w-2 h-2 rounded-full" style={{ background: priorityColor, boxShadow: `0 0 8px ${priorityColor}80` }} />
-           </div>
-           <select 
-             value={task.status} 
-             onChange={e => onStatusUpdate(task._id, e.target.value)}
-             style={{ color: sHex, borderColor: `${sHex}44` }}
-             className="text-xs px-2 py-1 bg-transparent border rounded-md outline-none cursor-pointer hover:bg-white/5 transition-colors"
-           >
-             <option value="todo" className="text-text-primary bg-bg-elevated">To Do</option>
-             <option value="in-progress" className="text-text-primary bg-bg-elevated">In Progress</option>
-             <option value="review" className="text-text-primary bg-bg-elevated">Review</option>
-             <option value="done" className="text-text-primary bg-bg-elevated">Done</option>
-           </select>
+          <div className="flex items-center gap-1.5 opacity-80 group-hover:opacity-100 transition-opacity">
+            <span className="text-[11px] text-text-muted uppercase tracking-widest hidden sm:inline-block">Priority</span>
+            <div className="w-2 h-2 rounded-full" style={{ background: priorityColor, boxShadow: `0 0 8px ${priorityColor}80` }} />
+          </div>
+          <select
+            value={task.status}
+            onChange={e => onStatusUpdate(task._id, e.target.value)}
+            style={{ color: sHex, borderColor: `${sHex}44` }}
+            className="text-xs px-2 py-1 bg-transparent border rounded-md outline-none cursor-pointer hover:bg-white/5 transition-colors"
+          >
+            <option value="todo" className="text-text-primary bg-bg-elevated">To Do</option>
+            <option value="in-progress" className="text-text-primary bg-bg-elevated">In Progress</option>
+            <option value="review" className="text-text-primary bg-bg-elevated">Review</option>
+            <option value="done" className="text-text-primary bg-bg-elevated">Done</option>
+          </select>
         </div>
       </div>
     </div>
@@ -117,8 +117,8 @@ const MyTasks = () => {
 
   const groups = {
     overdue: filtered.filter(t => t.deadline && isAfter(new Date(), new Date(t.deadline)) && t.status !== 'done'),
-    active:  filtered.filter(t => t.status !== 'done' && !(t.deadline && isAfter(new Date(), new Date(t.deadline)))),
-    done:    filtered.filter(t => t.status === 'done'),
+    active: filtered.filter(t => t.status !== 'done' && !(t.deadline && isAfter(new Date(), new Date(t.deadline)))),
+    done: filtered.filter(t => t.status === 'done'),
   };
 
   if (loading) return <div className="flex justify-center pt-20"><Loader2 className="w-8 h-8 animate-spin text-green" /></div>;
@@ -134,14 +134,14 @@ const MyTasks = () => {
           <span className="w-1.5 h-1.5 rounded-full bg-green shadow-[0_0_10px_var(--tw-colors-green-DEFAULT)]" />
           Personal Workload
         </div>
-        
+
         <h1 className="text-[clamp(32px,5vw,48px)] font-black tracking-tight leading-[1.1] mb-4 text-text-primary">
           My{' '}
           <span className="bg-clip-text text-transparent bg-gradient-to-br from-text-primary to-green">
             Tasks
           </span>
         </h1>
-        
+
         <p className="text-lg text-text-secondary max-w-[600px] leading-relaxed">
           You have {tasks.length} task{tasks.length !== 1 ? 's' : ''} assigned to you. Keep pushing forward and stay on top of your goals.
         </p>
@@ -151,15 +151,15 @@ const MyTasks = () => {
       <div className="relative z-20 mb-8 flex flex-wrap gap-4 items-center">
         <div className="relative flex-1 min-w-[200px]">
           <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted" />
-          <input 
-            value={search} 
-            onChange={e => setSearch(e.target.value)} 
-            placeholder="Search tasks..." 
-            className="w-full h-11 pl-10 pr-4 rounded-xl border border-white/10 bg-bg-elevated text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-green/50 transition-colors" 
+          <input
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            placeholder="Search tasks..."
+            className="w-full h-11 pl-10 pr-4 rounded-xl border border-white/10 bg-bg-elevated text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-green/50 transition-colors"
           />
         </div>
-        <select 
-          value={statusFilter} 
+        <select
+          value={statusFilter}
           onChange={e => setStatusFilter(e.target.value)}
           className="h-11 rounded-xl border border-white/10 bg-bg-elevated text-sm text-text-primary px-4 outline-none focus:border-green/50 min-w-[140px] cursor-pointer"
         >
@@ -169,8 +169,8 @@ const MyTasks = () => {
           <option value="review">Review</option>
           <option value="done">Done</option>
         </select>
-        <select 
-          value={priorityFilter} 
+        <select
+          value={priorityFilter}
           onChange={e => setPriorityFilter(e.target.value)}
           className="h-11 rounded-xl border border-white/10 bg-bg-elevated text-sm text-text-primary px-4 outline-none focus:border-green/50 min-w-[140px] cursor-pointer"
         >
